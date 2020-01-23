@@ -46,7 +46,6 @@ vi /etc/hosts       - make below entry on all above servers
 ```
 
 ### Installing cfssl on HAproxy loadbalancer  server for to generate certificate files.
-                 **********************************************************************************
 
 1- Download the binaries.
 ```
@@ -383,7 +382,7 @@ WantedBy=multi-user.target
 ```
 
 ### Reload the daemon configuration & restart and enable etcd service 
-~~~
+```
 
   #systemctl daemon-reload
   
@@ -419,13 +418,10 @@ etcd:
  ### Initialize the machine as a master node.
 ```
     # kubeadm init --config=kubeadm-config.yml
- ```   
+ ```
+### Copy Certificate file on Master1
  ```   
 [root@kubemas1 pki]# scp -r /etc/kubernetes/pki root@192.168.56.142:/etc/kubernetes
-root@192.168.56.142's password:
-Permission denied, please try again.
-root@192.168.56.142's password:
-Permission denied, please try again.
 root@192.168.56.142's password:
 ca.key                                                                                                                           100% 1679     2.0MB/s   00:00
 ca.crt                                                                                                                           100% 1025   958.9KB/s   00:00
@@ -440,6 +436,7 @@ front-proxy-client.crt                                                          
 sa.key                                                                                                                           100% 1675     1.8MB/s   00:00
 sa.pub                                                                                                                           100%  451   471.0KB/s   00:00
 ```
+### Copy Certificate file on Master2
 ```
 [root@kubemas1 pki]# scp -r /etc/kubernetes/pki root@192.168.56.144:/etc/kubernetes
 root@192.168.56.144's password:
@@ -458,9 +455,9 @@ sa.pub
 
 ```
 ### you can login to 192.168.56.144 & 192.168.56.142 and remove the apiserver.key and apiserver.crt  file from  /etc/kubernetes/pki/
-
+```
    #kubeadm init --config kubeadm-config.yaml
-    
+ ```   
 ### Your Kubernetes control-plane has initialized successfully!
 ~~~
 To start using your cluster, you need to run the following as a regular user on all kubemas servers.
@@ -469,23 +466,25 @@ To start using your cluster, you need to run the following as a regular user on 
   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
   sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-You should now deploy a pod network to the cluster.
+### You should now deploy a pod network to the cluster.
+```
 Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
   https://kubernetes.io/docs/concepts/cluster-administration/addons/
-
-You can now join any number of control-plane nodes by copying certificate authorities
-and service account keys on each node and then running the following as root:
-
+```
+### You can now join any number of control-plane nodes by copying certificate authorities and service account keys on each node and then running the following as root:
+~~~
   kubeadm join 192.168.56.145:6443 --token d5gtul.9su0rkdxsmj1zlux \
     --discovery-token-ca-cert-hash sha256:fe18f7a07c0f23734d14bdc160d9f2fd6bffcd52b5c1555a18fe2f4662590dce \
     --control-plane
-
-Then you can join any number of worker nodes by running the following on each as root:
-
+~~~
+### Then you can join any number of worker nodes by running the following on each as root:
+~~~
 kubeadm join 192.168.56.145:6443 --token d5gtul.9su0rkdxsmj1zlux \
     --discovery-token-ca-cert-hash sha256:fe18f7a07c0f23734d14bdc160d9f2fd6bffcd52b5c1555a18fe2f4662590dce
 https://cloudformsblog.redhat.com/2018/03/22/cloudforms-on-aws-part-1-series/
-
+~~~
+### Test Cluster
+```
 
  #kubectl --kubeconfig /etc/kubernetes/admin.conf get nodes
  
@@ -494,9 +493,10 @@ kubemas1.anbu.com   Ready    master   23d   v1.17.0
 kubemas2.anbu.com   Ready    master   23d   v1.17.0
 kubemas3.anbu.com   Ready    master   23d   v1.17.0
 
+```
 
-  Apply the CNI plugin of your choice. The given example is for Weave Net , execute below command on all kubemas servers. use either one.
-
+### Apply the CNI plugin of your choice. The given example is for Weave Net , execute below command on all kubemas servers. use either one.
+~~~
   Weave net
   
  #kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
