@@ -110,15 +110,15 @@ Create the certificate authority signing request configuration file.
  ]
 }
 ```
-G
-### Generate the certificate authority certificate and private key.
 
+### Generate the certificate authority certificate and private key.
+```
 #cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 
 Verify that the ca-key.pem and the ca.pem were generated.
 
 #ls -la
-
+```
 ### Creating the certificate for the cluster
 ```
 #vim kubernetes-csr.json
@@ -149,25 +149,21 @@ Generate the certificate and private key.
 -hostname=192.168.56.142,192.168.56.143,192.168.56.144,192.168.56.145,127.0.0.1,kubernetes.default \
 -profile=kubernetes kubernetes-csr.json | cfssljson -bare kubernetes
 --------------------------------------------------
-```
+
 Verify that the kubernetes-key.pem and the kubernetes.pem file were generated.
 
 #ls -la
-
-
-# scp ca.pem kubernetes.pem kubernetes-key.pem root@192.168.56.142:~
-# scp ca.pem kubernetes.pem kubernetes-key.pem root@192.168.56.143:~
-# scp ca.pem kubernetes.pem kubernetes-key.pem root@192.168.56.144:~
-
-
-
-****************************************************************************************************************************************
+```
+### Copying files to masters
+```
+scp ca.pem kubernetes.pem kubernetes-key.pem root@192.168.56.142:~
+scp ca.pem kubernetes.pem kubernetes-key.pem root@192.168.56.143:~
+scp ca.pem kubernetes.pem kubernetes-key.pem root@192.168.56.144:~
+```
 
 
 ### Install Docker community edition on kubemas1 , kubemas2 , kubemas3 servers.
 
-    Install required packages. yum-utils provides the yum-config-manager utility, 
-    and device-mapper-persistent-data and lvm2 are required by the devicemapper storage driver
 ```
 #yum install -y yum-utils \
   device-mapper-persistent-data \
@@ -183,7 +179,6 @@ Verify that the kubernetes-key.pem and the kubernetes.pem file were generated.
 
 #systemctl start docker && systemctl enable docker
 
-***************************************************************************************************************************************
 ```
 ### Install kubernetes on kubemas1 , kubemas2, kubemas3 servers.
 ```
@@ -198,19 +193,25 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
 -------------------------------------------
+
+
 # Set SELinux in permissive mode (effectively disabling it)
 setenforce 0
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 -------------------------------------------
+
+
 yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 
 systemctl enable --now kubelet
 -------------------------------------------
 
+
 Some users on RHEL/CentOS 7 have reported issues with traffic being routed incorrectly due to iptables being bypassed.
 You should ensure net.bridge.bridge-nf-call-iptables is set to 1 in your sysctl config
 
 ---------------------------------------
+
 cat <<EOF >  /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
@@ -226,8 +227,6 @@ systemctl restart kubelet
 ```    
    # swapoff -a
    # sed -i '/ swap / s/^/#/' /etc/fstab
-   
-*******************************************************************************
 ```
 
  ### Install etcd cluster on kubemas1 , kubemas2, kubemas3 servers
@@ -236,9 +235,11 @@ systemctl restart kubelet
   
       #mkdir /etc/etcd /var/lib/etcd
       
+
     Move the certificates to the configuration directory.
 
       #mv ~/ca.pem ~/kubernetes.pem ~/kubernetes-key.pem /etc/etcd
+
       
   #wget https://github.com/etcd-io/etcd/releases/download/v3.3.18/etcd-v3.3.18-linux-amd64.tar.gz
   
@@ -246,10 +247,12 @@ systemctl restart kubelet
       Extract the etcd archive.
 
   #tar xvzf etcd-v3.3.18-linux-amd64.tar.gz
+
   
   Move the etcd binaries to /usr/local/bin.
 
     #mv etcd-v3.3.18-linux-amd64/etcd* /usr/local/bin/
+
     
   # etcd --version
 
@@ -258,7 +261,6 @@ systemctl restart kubelet
       Go Version: go1.12.12
       Go OS/Arch: linux/amd64
 
-*******************************************************************************
 ```
 ### Create etcd systemd service file for each kubemas servers
 
@@ -266,7 +268,7 @@ systemctl restart kubelet
   
    create a etcd.service on kubemas1 server
    ========================================
-   
+ ```  
 #vi /etc/systemd/system/etcd.service
  
    
@@ -378,12 +380,10 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 
-
----------------------------------------------------------------------------
 ```
 
 ### Reload the daemon configuration & restart and enable etcd service 
-
+~~~
 
   #systemctl daemon-reload
   
@@ -394,7 +394,7 @@ Verify that the cluster is up and running.
 
 # ETCDCTL_API=3 etcdctl member list
 
-------------------------------------------------------
+```
 
 ### Create kubeadm configuration file on kubemas1 server only.
 ```
