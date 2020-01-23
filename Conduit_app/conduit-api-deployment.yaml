@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conduit-api
+spec:
+  replicas: 1
+  minReadySeconds: 15
+  selector:
+    matchLabels:
+      app: conduit-api
+  template:
+    metadata:
+      labels:
+        app: conduit-api
+    spec:
+      containers:
+        - image: rakeshkhot5/cond-a:3.0.0
+          imagePullPolicy: Always
+          name: conduit-api
+          env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://mysql:3306/conduit
+          - name: SPRING_DATASOURCE_USERNAME
+            value: root
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: password
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: conduit-api-lb
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    nodePort: 30307
+  selector:
+    app: conduit-api
