@@ -1,5 +1,5 @@
 # Install and configure a multi-master Kubernetes cluster with kubeadm 
-![img](https://github.com/rakeshkhot5/kubernetes/images/blob/master/kubernets-logo.png)
+![img](https://github.com/rakeshkhot5/kubernets/blob/master/images/kubernets-logo.png)
 
 ### Prerequisites
 For this lab, we will use a standard Ubuntu 16.04 or 18.04 installation as a base image for the seven machines needed. The machines will all be configured on the same network, 10.10.10.0/24, and this network needs to have access to the Internet.
@@ -14,7 +14,7 @@ We also need an IP range for the pods. This range will be 10.30.0.0/16, but it i
 
 I will use my Linux desktop as a client machine to generate all the necessary certificates, but also to manage the Kubernetes cluster. If you don't have a Linux desktop, you can use the HAProxy machine to do the same thing.<br>
 
-![img](https://github.com/rakeshkhot5/kubernetes/images/blob/master/multi-master-with-HA.png) <br>
+![img](https://github.com/rakeshkhot5/kubernets/blob/master/images/multi-master-with-HA.png) <br>
 
 ### Installing the client tools
 We will need two tools on the client machine: the Cloud Flare SSL tool to generate the different certificates, and the Kubernetes client, kubectl, to manage the Kubernetes cluster.
@@ -474,4 +474,4 @@ $ kubectl get nodes
 ## Contributor
 
 - [Apurva Bhandari](apurvbhandari@gmail.com)
-- [Rakesh Khot]
+- [Rakesh Khot](rakeshkhot18@gmail.com)
