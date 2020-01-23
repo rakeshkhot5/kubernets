@@ -1,5 +1,6 @@
 ### Backup Kubernetes PKI
 
+Shell Script to backup PKI files
 
 ```
 #!/bin/sh
@@ -13,9 +14,14 @@ then
 fi
 
 cp -a $KUBE_CERT_DIR $BACKUP_CERT_DIR
-# Backup Kubernetes Etcd database with a CronJob object
+
+```
+
+### Backup Kubernetes Etcd database with a CronJob object
+
 The CronJob must be scheduled to Kubernetes Master node.
 
+```
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -67,8 +73,9 @@ spec:
 
 ### Recovery from Master Failure with Kubeadm
 
-```
+Shell Script to recover pki and etcd on master node.
 
+```
 #/bin/sh
 
 #####################################
