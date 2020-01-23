@@ -262,8 +262,6 @@ systemctl restart kubelet
 
 ```
 ### Create etcd systemd service file for each kubemas servers
-
-  ---------------------------------------------------------
   
    create a etcd.service on kubemas1 server
    ========================================
@@ -304,9 +302,7 @@ WantedBy=multi-user.target
 ```
     
 ### create a etcd.service on kubemas2 server
-    ========================================
- ```   
- 
+ ```    
 #vi /etc/systemd/system/etcd.service
 
 [Unit]
@@ -454,12 +450,14 @@ sa.key                                                                          
 sa.pub                                    
 
 ```
-### you can login to 192.168.56.144 & 192.168.56.142 and remove the apiserver.key and apiserver.crt  file from  /etc/kubernetes/pki/
+You can login to 192.168.56.144 & 192.168.56.142 and remove the apiserver.key and apiserver.crt  file from  /etc/kubernetes/pki/
+
 ```
    #kubeadm init --config kubeadm-config.yaml
- ```   
+``` 
+
 ### Your Kubernetes control-plane has initialized successfully!
-~~~
+```
 To start using your cluster, you need to run the following as a regular user on all kubemas servers.
 
   mkdir -p $HOME/.kube
@@ -496,7 +494,7 @@ kubemas3.anbu.com   Ready    master   23d   v1.17.0
 ```
 
 ### Apply the CNI plugin of your choice. The given example is for Weave Net , execute below command on all kubemas servers. use either one.
-~~~
+```
   Weave net
   
  #kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
